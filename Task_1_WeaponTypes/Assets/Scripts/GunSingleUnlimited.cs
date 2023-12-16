@@ -1,18 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GunSingleUnlimited : MonoBehaviour
+public class GunSingleUnlimited : IGunType
 {
-    // Start is called before the first frame update
-    void Start()
+    private IGunStats _gun;
+
+    public void ActivateGun()
     {
-        
+        _gun.GunSkin.gameObject.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DisableGun()
     {
-        
+        _gun.GunSkin.gameObject.SetActive(false);
     }
+
+    public GunSingleUnlimited(IGunStats stats)
+    {
+        _gun = stats;
+    }
+
+    public void Shot()
+    {
+        GameObject bullet = MonoBehaviour.Instantiate(_gun.BulletPrefab,
+            _gun.BulletSpawnPoint.position, _gun.BulletSpawnPoint.rotation);
+        //bullet.transform.Translate(_gun.BulletSpawnPoint.forward * deltaTime * _gun.BulletSpeed);
+        bullet.GetComponent<Rigidbody>().AddForce(_gun.BulletSpawnPoint.forward * _gun.BulletSpeed);
+    }
+
+
+
+
+
 }

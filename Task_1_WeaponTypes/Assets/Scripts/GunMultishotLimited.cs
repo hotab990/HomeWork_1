@@ -1,18 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GunMultishotLimited : MonoBehaviour
+public class GunMultishotLimited : IGunType
 {
-    // Start is called before the first frame update
-    void Start()
+    private IGunStats _gun;
+
+    private int _bulletsInGun;
+
+    public void ActivateGun()
     {
-        
+        _gun.GunSkin.gameObject.SetActive(true);
+        _bulletsInGun = _gun.CurrentBulletCount;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DisableGun()
     {
-        
+        _gun.GunSkin.gameObject.SetActive(false);
+    }
+
+    public GunMultishotLimited(IGunStats stats)
+    {
+        _gun = stats;
+    }
+
+    public void Shot()
+    {
+        if (_bulletsInGun <= 0)
+            return;
+
+        _bulletsInGun--;
+
+            GameObject bullet = MonoBehaviour.Instantiate(_gun.BulletPrefab,
+                _gun.BulletSpawnPoint.position, _gun.BulletSpawnPoint.rotation);
+
+            //bullet.transform.Translate(_gun.BulletSpawnPoint.forward * deltaTime * _gun.BulletSpeed);
+            bullet.GetComponent<Rigidbody>().AddForce(_gun.BulletSpawnPoint.forward * _gun.BulletSpeed);
     }
 }
